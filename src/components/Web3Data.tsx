@@ -76,13 +76,13 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
     NameContract.methods.transfer(fromAddress, 1).send({from: toAddress});
   };
 
-  const depositAndWithdraw = async function () {
+  /*const depositAndWithdraw = async function () {
     const mainWeb3 = new Web3(window.ethereum);
     const maticWeb3 = new Web3(window.ethereum);
     // const rootTokenContract = new mainWeb3.eth.Contract(rootTokenABI, rootTokenAddress);
     // const rootChainManagerContract = new mainWeb3.eth.Contract(rootChainManagerABI, rootChainManagerAddress);
     // const childTokenContract = new maticWeb3(childTokenABI, childTokenAddress);
-  };
+  };*/
   return (
     <div>
       <h3> {title} </h3>
@@ -96,7 +96,6 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
           <button onClick={getInt}>Get int from contract</button>
           <button onClick={incrementInt}>Increment int from contract</button>
           <button onClick={transfer}>Transfer</button>
-          <button onClick={depositAndWithdraw}>Deposit and Withdraw</button>
         </div>
       ) : !!networkId && providerName !== "infura" ? (
         <div>

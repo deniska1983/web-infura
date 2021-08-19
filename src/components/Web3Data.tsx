@@ -107,7 +107,7 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
       rootChainManagerABI as AbiItem[],
       chains_config.root.chainManagerAddress,
     );
-    const childTokenContract = new maticWeb3(childTokenABI as AbiItem[], chains_config.child.tokenAddress);
+    const childTokenContract = new maticWeb3.eth.Contract(childTokenABI as AbiItem[], chains_config.child.tokenAddress);
 
     await rootTokenContract.methods
       .approve(chains_config.child.erc20Predicate, 5000)

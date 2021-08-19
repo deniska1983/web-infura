@@ -11,7 +11,7 @@ module.exports = {
     posEtherPredicate: '0xe2B01f3978c03D6DdA5aE36b2f3Ac0d66C54a6D5',
     erc20Predicate: '0x37c3bfc05d5ebf9ebb3ff80ce0bd0133bf221bc8',       //из доки https://docs.matic.network/docs/develop/ethereum-matic/mintable-assets MintableERC20PredicateProxy
     tokenAddress: '0x7e378F0993541C036180C8D56cE8392BCcbfE42B',         //root token, который замаппин
-    chainManagerAddress : '0xfCFECfadfb60b936D1a7bf2Ff81c5b4A9a31AAD6',
+    chainManagerAddress : '0xfCFECfadfb60b936D1a7bf2Ff81c5b4A9a31AAD6',  //root chain Manager
   },
   child: {
     //RPC: 'https://polygon-mumbai.infura.io/v3/a53fefd958404285a3f9404eea3bb4b9'

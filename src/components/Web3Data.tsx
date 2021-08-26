@@ -6,6 +6,7 @@ import abi from "./abi.json";
 import rootTokenABI from "./rootTokenABI.json";
 import rootChainManagerABI from "./rootChainManagerABI.json";
 import childTokenABI from "./childMintableAbi.json";
+import marketplaceERC721ABI from "./MarketplaceERC721ABI.json";
 import {AbiItem} from "web3-utils";
 
 declare global {
@@ -24,12 +25,16 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
   //const HDWalletProvider = require("@truffle/hdwallet-provider");
   const chains_config = require("./config.js");
 
-  const deployAddress = "0x9da5b38B668267e3171dBcBa769Ca83Da1015665"; //  rinkeby  deploy erc20
+  const marketplaceERC721Address = "0xCFf8E41C66C85e3163EA31BCA81cD54Be4062aD4"; //  rinkeby marketplace for ERC721 owner Account1
+  const dummyMintableERC721Address = "0x69F7C46951655063DF0324145a12EC0D2dF11AbD"; //  rinkeby ERC721 owner Account2
+  const dummyMintableERC20Address = "0xFE2F5be3c0dfdE26740a677f20B1B0ba86Fba4Aa"; //  rinkeby ERC70 owner Account1
+
   //const deployAddress = "0xE18996E18b8beF6DaCe4D411805B4C0b492D7D8E"; //  Matic Mumbai deploy erc20
   const web3Context = useWeb3(`wss://goerli.infura.io/ws/v3/${process.env.REACT_APP_INFURA_PROJECT_ID}`);
   //const web3ContextMatic = useWeb3(`https://polygon-mumbai.infura.io/v3/${process.env.REACT_APP_INFURA_PROJECT_ID}`);
   const {networkId, networkName, accounts, providerName, lib} = web3Context;
   const [balance, setBalance] = useState(0);
+
   const getBalance = useCallback(async () => {
     let balance =
       accounts && accounts.length > 0 ? lib.utils.fromWei(await lib.eth.getBalance(accounts[0]), "ether") : "Unknown";
@@ -49,35 +54,30 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
   };
   const requestAccess = useCallback(() => requestAuth(web3Context), [web3Context]);
 
-  const getInt = async function (): Promise<number> {
-    const web3 = new Web3(window.ethereum);
-    await window.ethereum.enable();
-    const NameContract = new web3.eth.Contract(abi as AbiItem[], deployAddress);
-    const i = NameContract.methods.getTest().call();
-    return i.then((result: any) => {
-      console.log("result: ", result);
-      return result;
-    });
-  };
-
-  const incrementInt = async function () {
-    let i = await getInt();
-    const web3 = new Web3(window.ethereum);
-    await window.ethereum.enable();
-    const NameContract = new web3.eth.Contract(abi as AbiItem[], deployAddress);
-    i++;
-    NameContract.methods.setTest(i).call();
-
-    console.log("i++", i);
-  };
-
   const transfer = async function () {
     const web3 = new Web3(window.ethereum);
     await window.ethereum.enable();
-    const NameContract = new web3.eth.Contract(abi as AbiItem[], deployAddress);
+    const NameContract = new web3.eth.Contract(abi as AbiItem[], dummyMintableERC20Address);
     const fromAddress = "0xB401bBf1CBC0032EA740219c4434b4A93a6b303A";
     const toAddress = "0x5FDF7d568Af5768c68353A9407416a767d28aa16";
     NameContract.methods.transfer(toAddress, 1).send({from: fromAddress});
+  };
+
+  const createOrder = async function () {
+    const web3 = new Web3(window.ethereum);
+    await window.ethereum.enable();
+    const marketplaceContract = new web3.eth.Contract(marketplaceERC721ABI as AbiItem[], marketplaceERC721Address);
+    const address = accounts && accounts.length ? accounts[0] : "Unknown";
+    //const toAddress = "0x5FDF7d568Af5768c68353A9407416a767d28aa16";
+    marketplaceContract.methods.createOrder(dummyMintableERC721Address, 0, 300, 1829897953).send({from: address});
+  };
+
+  const executeOrder = async function () {
+    const web3 = new Web3(window.ethereum);
+    await window.ethereum.enable();
+    const marketplaceContract = new web3.eth.Contract(marketplaceERC721ABI as AbiItem[], marketplaceERC721Address);
+    const address = accounts && accounts.length ? accounts[0] : "Unknown";
+    marketplaceContract.methods.executeOrder(dummyMintableERC721Address, 0, 300).send({from: address});
   };
 
   /*const getMaticPOSClient = () => {
@@ -134,11 +134,13 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
       <div>Your address: {accounts && accounts.length ? accounts[0] : "Unknown"}</div>
       <div>Your ETH balance: {balance}</div>
       <div>Provider: {providerName}</div>
+      <div>
+        <button onClick={createOrder}>Create order</button>
+        <button onClick={executeOrder}>Execute order</button>
+      </div>
       {accounts && accounts.length ? (
         <div>
           <p>Accounts & Signing Status: Access Granted</p>
-          <button onClick={getInt}>Get int from contract</button>
-          <button onClick={incrementInt}>Increment int from contract</button>
           <button onClick={transfer}>Transfer</button>
           <button onClick={depositAndWithdraw}>Deposit and withdrow</button>
         </div>

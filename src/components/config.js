@@ -14,8 +14,8 @@ module.exports = {
     chainManagerAddress : '0xfCFECfadfb60b936D1a7bf2Ff81c5b4A9a31AAD6',  //root chain Manager
   },
   child: {
-    //RPC: 'https://polygon-mumbai.infura.io/v3/a53fefd958404285a3f9404eea3bb4b9'
-    RPC: 'https://rpc-mumbai.matic.today',
+    RPC: 'https://polygon-mumbai.infura.io/v3/a53fefd958404285a3f9404eea3bb4b9',
+    //RPC: 'https://rpc-mumbai.matic.today',
     DERC20: '0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1',
     DERC721: '0x757b1BD7C12B81b52650463e7753d7f5D0565C0e',
     DERC1155: '0xA07e45A987F19E25176c877d98388878622623FA',

@@ -26,6 +26,8 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
   const nftId = useInput(0);
   const amount = useInput(300);
 
+  const [balERC20, setBalERC20] = useState(0);
+
   //const MaticPOSClient = require("@maticnetwork/maticjs").MaticPOSClient;
   //const HDWalletProvider = require("@truffle/hdwallet-provider");
   const chains_config = require("./config.js");
@@ -67,7 +69,7 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
     //const toAddress = "0x5FDF7d568Af5768c68353A9407416a767d28aa16";
     const address = accounts && accounts.length ? accounts[0] : "Unknown";
     const balanceERC20 = ERC20Contract.methods.balanceOf(address).call();
-    console.log(balanceERC20);
+    setBalERC20(balanceERC20);
   };
 
   const createOrder = async function () {
@@ -148,6 +150,7 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
       <div>Provider: {providerName}</div>
       <input type="number" placeholder="NFT ID" {...nftId} />
       <input type="number" placeholder="Amount" {...amount} />
+      <div>{balERC20}</div>
       <div>
         <button onClick={createOrder}>Create order</button>
         <button onClick={executeOrder}>Execute order</button>

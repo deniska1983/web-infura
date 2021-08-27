@@ -59,13 +59,15 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
   };
   const requestAccess = useCallback(() => requestAuth(web3Context), [web3Context]);
 
-  const transfer = async function () {
+  const balanceERC20 = async function () {
     const web3 = new Web3(window.ethereum);
     await window.ethereum.enable();
-    const NameContract = new web3.eth.Contract(abi as AbiItem[], dummyMintableERC20Address);
-    const fromAddress = "0xB401bBf1CBC0032EA740219c4434b4A93a6b303A";
-    const toAddress = "0x5FDF7d568Af5768c68353A9407416a767d28aa16";
-    NameContract.methods.transfer(toAddress, 1).send({from: fromAddress});
+    const ERC20Contract = new web3.eth.Contract(abi as AbiItem[], dummyMintableERC20Address);
+    //const fromAddress = "0xB401bBf1CBC0032EA740219c4434b4A93a6b303A";
+    //const toAddress = "0x5FDF7d568Af5768c68353A9407416a767d28aa16";
+    const address = accounts && accounts.length ? accounts[0] : "Unknown";
+    const balanceERC20 = ERC20Contract.methods.balanceOf(address).call();
+    console.log(balanceERC20);
   };
 
   const createOrder = async function () {
@@ -74,7 +76,9 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
     const marketplaceContract = new web3.eth.Contract(marketplaceERC721ABI as AbiItem[], marketplaceERC721Address);
     const address = accounts && accounts.length ? accounts[0] : "Unknown";
     //const toAddress = "0x5FDF7d568Af5768c68353A9407416a767d28aa16";
-    marketplaceContract.methods.createOrder(dummyMintableERC721Address, nftId.value, amount.value, 1829897953).send({from: address});
+    marketplaceContract.methods
+      .createOrder(dummyMintableERC721Address, nftId.value, amount.value, 1829897953)
+      .send({from: address});
   };
 
   const executeOrder = async function () {
@@ -82,7 +86,9 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
     await window.ethereum.enable();
     const marketplaceContract = new web3.eth.Contract(marketplaceERC721ABI as AbiItem[], marketplaceERC721Address);
     const address = accounts && accounts.length ? accounts[0] : "Unknown";
-    marketplaceContract.methods.executeOrder(dummyMintableERC721Address, nftId.value, amount.value).send({from: address});
+    marketplaceContract.methods
+      .executeOrder(dummyMintableERC721Address, nftId.value, amount.value)
+      .send({from: address});
   };
 
   /*const getMaticPOSClient = () => {
@@ -149,7 +155,7 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
       {accounts && accounts.length ? (
         <div>
           <p>Accounts & Signing Status: Access Granted</p>
-          <button onClick={transfer}>Transfer</button>
+          <button onClick={balanceERC20}>Balance of ERC20</button>
           <button onClick={depositAndWithdraw}>Deposit and withdrow</button>
         </div>
       ) : !!networkId && providerName !== "infura" ? (

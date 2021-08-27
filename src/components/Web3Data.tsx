@@ -8,6 +8,7 @@ import rootChainManagerABI from "./rootChainManagerABI.json";
 import childTokenABI from "./childMintableAbi.json";
 import marketplaceERC721ABI from "./MarketplaceERC721ABI.json";
 import {AbiItem} from "web3-utils";
+import {useInput} from "../use-input";
 
 declare global {
   interface Window {
@@ -21,6 +22,10 @@ interface IWeb3DataProps {
 
 export const Web3Data: FC<IWeb3DataProps> = props => {
   const {title} = props;
+
+  const nftId = useInput(0);
+  const amount = useInput(300);
+
   //const MaticPOSClient = require("@maticnetwork/maticjs").MaticPOSClient;
   //const HDWalletProvider = require("@truffle/hdwallet-provider");
   const chains_config = require("./config.js");
@@ -69,7 +74,7 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
     const marketplaceContract = new web3.eth.Contract(marketplaceERC721ABI as AbiItem[], marketplaceERC721Address);
     const address = accounts && accounts.length ? accounts[0] : "Unknown";
     //const toAddress = "0x5FDF7d568Af5768c68353A9407416a767d28aa16";
-    marketplaceContract.methods.createOrder(dummyMintableERC721Address, 0, 300, 1829897953).send({from: address});
+    marketplaceContract.methods.createOrder(dummyMintableERC721Address, nftId.value, amount.value, 1829897953).send({from: address});
   };
 
   const executeOrder = async function () {
@@ -77,7 +82,7 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
     await window.ethereum.enable();
     const marketplaceContract = new web3.eth.Contract(marketplaceERC721ABI as AbiItem[], marketplaceERC721Address);
     const address = accounts && accounts.length ? accounts[0] : "Unknown";
-    marketplaceContract.methods.executeOrder(dummyMintableERC721Address, 0, 300).send({from: address});
+    marketplaceContract.methods.executeOrder(dummyMintableERC721Address, nftId.value, amount.value).send({from: address});
   };
 
   /*const getMaticPOSClient = () => {
@@ -127,6 +132,7 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
       gasPrice: "10000000000",
     });*/
   };
+
   return (
     <div>
       <h3> {title} </h3>
@@ -134,6 +140,8 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
       <div>Your address: {accounts && accounts.length ? accounts[0] : "Unknown"}</div>
       <div>Your ETH balance: {balance}</div>
       <div>Provider: {providerName}</div>
+      <input type="number" placeholder="NFT ID" {...nftId} />
+      <input type="number" placeholder="Amount" {...amount} />
       <div>
         <button onClick={createOrder}>Create order</button>
         <button onClick={executeOrder}>Execute order</button>

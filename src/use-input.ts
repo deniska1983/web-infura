@@ -1,14 +1,14 @@
-import { useState, ChangeEvent } from "react";
+import {useState, ChangeEvent} from "react";
 
-export const useInput = (initialValue: string | number) => {
+export const useInput = (initialValue: string | number = "") => {
   const [value, setValue] = useState(initialValue);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.type === "number" ? parseFloat(event.target.value) : event.target.value);
+    setValue(event.target.type === "number" ? parseFloat(event.target.value) || "" : event.target.value);
   };
 
   return {
     value,
-    onChange: handleChange
+    onChange: handleChange,
   };
 };

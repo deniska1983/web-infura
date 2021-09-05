@@ -68,7 +68,7 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
     //const fromAddress = "0xB401bBf1CBC0032EA740219c4434b4A93a6b303A";
     //const toAddress = "0x5FDF7d568Af5768c68353A9407416a767d28aa16";
     const address = accounts && accounts.length ? accounts[0] : "Unknown";
-    const balanceERC20 = ERC20Contract.methods.balanceOf(address).call();
+    const balanceERC20 = await ERC20Contract.methods.balanceOf(address).call();
     setBalERC20(balanceERC20);
   };
 

@@ -93,6 +93,38 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
       .send({from: address});
   };
 
+  const approve = async function () {
+    const web3 = new Web3(window.ethereum);
+    await window.ethereum.enable();
+    const ERC20Contract = new web3.eth.Contract(abi as AbiItem[], dummyMintableERC20Address);
+    const address = accounts && accounts.length ? accounts[0] : "Unknown";
+    ERC20Contract.methods.approve(address, amount.value).send({from: address});
+  };
+
+  const listen = async function () {
+    const web3 = new Web3(window.ethereum);
+    await window.ethereum.enable();
+    const marketplaceContract = new web3.eth.Contract(marketplaceERC721ABI as AbiItem[], marketplaceERC721Address);
+    await marketplaceContract.events.OrderCreated(function (error: any, result: any) {
+      if (!error) console.log(result);
+    });
+
+    /*const address = accounts && accounts.length ? accounts[0] : "Unknown";
+    marketplaceContract.methods
+        .executeOrder(dummyMintableERC721Address, nftId.value, amount.value)
+        .send({from: address});*/
+  };
+
+  const random = async function () {
+    const web3 = new Web3(window.ethereum);
+    await window.ethereum.enable();
+    const marketplaceContract = new web3.eth.Contract(
+      marketplaceERC721ABI as AbiItem[],
+      "0xFbF3F9114D88853f8c0B422CbecAeD70F3C1aB9A",
+    );
+    console.log(marketplaceContract.methods.random().call());
+  };
+
   /*const getMaticPOSClient = () => {
     return new MaticPOSClient({
       network: "testnet", // optional, default is testnet
@@ -152,8 +184,11 @@ export const Web3Data: FC<IWeb3DataProps> = props => {
       <input type="number" placeholder="Amount" {...amount} />
       <div>{balERC20}</div>
       <div>
+        <button onClick={listen}>Listen</button>
         <button onClick={createOrder}>Create order</button>
+        <button onClick={approve}>Approve</button>
         <button onClick={executeOrder}>Execute order</button>
+        <button onClick={random}>Get random</button>
       </div>
       {accounts && accounts.length ? (
         <div>
